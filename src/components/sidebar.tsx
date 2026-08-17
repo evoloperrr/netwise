@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -59,59 +60,123 @@ const items: NavItem[] = [
   },
 ];
 
+function BrandMark() {
+  return (
+    <span className={styles.brandMark}>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path
+          d="M12 2 20.5 7v10L12 22 3.5 17V7L12 2Z"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="2" r="1.6" fill="currentColor" />
+        <circle cx="20.5" cy="7" r="1.6" fill="currentColor" />
+        <circle cx="20.5" cy="17" r="1.6" fill="currentColor" />
+        <circle cx="12" cy="22" r="1.6" fill="currentColor" />
+        <circle cx="3.5" cy="17" r="1.6" fill="currentColor" />
+        <circle cx="3.5" cy="7" r="1.6" fill="currentColor" />
+        <circle cx="12" cy="12" r="1.8" fill="currentColor" />
+        <path d="M12 12 12 2M12 12 20.5 7M12 12 20.5 17M12 12 12 22M12 12 3.5 17M12 12 3.5 7" stroke="currentColor" strokeWidth="1.1" />
+      </svg>
+    </span>
+  );
+}
+
+function NavList({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+  return (
+    <nav className={styles.nav}>
+      <span className={styles.navGroupLabel}>Overview</span>
+      {items.map((item) => {
+        const active = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={`${styles.navItem} ${active ? styles.navItemActive : ""}`}
+          >
+            <span className={styles.navIcon}>{item.icon}</span>
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Close the drawer whenever the route changes.
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Lock page scroll while the mobile drawer is open.
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.brand}>
-        <span className={styles.brandMark}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-            <path
-              d="M12 2 20.5 7v10L12 22 3.5 17V7L12 2Z"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
-            <circle cx="12" cy="2" r="1.6" fill="currentColor" />
-            <circle cx="20.5" cy="7" r="1.6" fill="currentColor" />
-            <circle cx="20.5" cy="17" r="1.6" fill="currentColor" />
-            <circle cx="12" cy="22" r="1.6" fill="currentColor" />
-            <circle cx="3.5" cy="17" r="1.6" fill="currentColor" />
-            <circle cx="3.5" cy="7" r="1.6" fill="currentColor" />
-            <circle cx="12" cy="12" r="1.8" fill="currentColor" />
-            <path d="M12 12 12 2M12 12 20.5 7M12 12 20.5 17M12 12 12 22M12 12 3.5 17M12 12 3.5 7" stroke="currentColor" strokeWidth="1.1" />
-          </svg>
-        </span>
-        <span className={styles.brandText}>
-          <span className={styles.brandName}>NetWise Pay</span>
-          <span className={styles.brandSub}>Think Smart. Connect Wise.</span>
-        </span>
-      </div>
-
-      <nav className={styles.nav}>
-        <span className={styles.navGroupLabel}>Overview</span>
-        {items.map((item) => {
-          const active = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`${styles.navItem} ${active ? styles.navItemActive : ""}`}
-            >
-              <span className={styles.navIcon}>{item.icon}</span>
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className={styles.navFooter}>
-        <div className={styles.envPill}>
-          <span className={styles.envDot} />
-          Sandbox data · not connected
+    <>
+      <aside className={styles.sidebar}>
+        <div className={styles.brand}>
+          <BrandMark />
+          <span className={styles.brandText}>
+            <span className={styles.brandName}>NetWise Pay</span>
+            <span className={styles.brandSub}>Think Smart. Connect Wise.</span>
+          </span>
         </div>
-      </div>
-    </aside>
+
+        <NavList pathname={pathname} />
+
+        <div className={styles.navFooter}>
+          <div className={styles.envPill}>
+            <span className={styles.envDot} />
+            Sandbox data · not connected
+          </div>
+        </div>
+      </aside>
+
+      <button
+        type="button"
+        className={styles.mobileToggle}
+        aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        aria-expanded={mobileOpen}
+        onClick={() => setMobileOpen((v) => !v)}
+      >
+        {mobileOpen ? (
+          <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+            <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+            <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        )}
+      </button>
+
+      <div
+        className={`${styles.mobileOverlay} ${mobileOpen ? styles.mobileOverlayOpen : ""}`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      <aside className={`${styles.mobileDrawer} ${mobileOpen ? styles.mobileDrawerOpen : ""}`}>
+        <div className={styles.brand}>
+          <BrandMark />
+          <span className={styles.brandText}>
+            <span className={styles.brandName}>NetWise Pay</span>
+            <span className={styles.brandSub}>Think Smart. Connect Wise.</span>
+          </span>
+        </div>
+
+        <NavList pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+      </aside>
+    </>
   );
 }

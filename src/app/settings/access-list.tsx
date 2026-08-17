@@ -9,6 +9,12 @@ type AccessRow = {
   role: string;
 };
 
+const ROLE_LABELS: Record<string, string> = {
+  view_only: "View only",
+  withdraw: "Withdraw + view",
+  manage: "Withdraw + manage",
+};
+
 export function AccessList() {
   const [rows, setRows] = useState<AccessRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +56,16 @@ export function AccessList() {
 
   async function removeRow(target: string) {
     await fetch(`/api/access/${encodeURIComponent(target)}`, { method: "DELETE" });
+    void load();
+  }
+
+  async function changeRole(target: string, role: string) {
+    setRows((prev) => prev.map((row) => (row.email === target ? { ...row, role } : row)));
+    await fetch(`/api/access/${encodeURIComponent(target)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role }),
+    });
     void load();
   }
 
@@ -96,7 +112,20 @@ export function AccessList() {
             {rows.map((row) => (
               <tr key={row.email}>
                 <td className={styles.cellPrimary}>{row.email}</td>
-                <td>{row.role === "manage" ? "Withdraw + manage" : "View only"}</td>
+                <td>
+                  <select
+                    className={styles.roleSelect}
+                    value={row.role}
+                    onChange={(event) => changeRole(row.email, event.target.value)}
+                    aria-label={`Role for ${row.email}`}
+                  >
+                    {Object.entries(ROLE_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </td>
                 <td>
                   <button type="button" className={styles.ghostButton} onClick={() => removeRow(row.email)}>
                     Remove

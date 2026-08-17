@@ -59,4 +59,5 @@ model GatewayConfig {
   maxPerTransactionPhp Float   @default(5000)
   processingFeePhp     Float   @default(25)
   cashOutsEnabled      Boolean @default(true)
+  apiKey               String  @unique
 }

@@ -4,6 +4,7 @@ import { getGatewayConfig } from "@/lib/config";
 import { formatPhp } from "@/lib/format";
 
 import { AccessList } from "./access-list";
+import { ApiKeyCard } from "./api-key-card";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,8 @@ export default async function SettingsPage() {
           </div>
         </div>
       </section>
+
+      <ApiKeyCard apiKey={config.apiKey} />
 
       <AccessList />
     </PageShell>

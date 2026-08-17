@@ -4,16 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.4",
-    "@prisma/adapter-libsql": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "next": "^16.3.0",
-    "prisma": "^7.9.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -22,6 +20,7 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "dotenv": "^17.4.2",
+    "prisma": "^7.9.1",
     "typescript": "^5.7.3"
   },
   "allowScripts": {

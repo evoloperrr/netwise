@@ -2,7 +2,7 @@ import { signIn } from "@/auth";
 import styles from "./login.module.css";
 
 const ERROR_MESSAGES: Record<string, string> = {
-  AccessDenied: "That Google account isn't allowed to access NetWise.",
+  AccessDenied: "That Google account isn't allowed to access NetWise Pay.",
   Default: "Something went wrong signing you in. Please try again.",
 };
 
@@ -32,7 +32,7 @@ export default async function LoginPage({
             />
           </svg>
         </span>
-        <span className={styles.brand}>NetWise</span>
+        <span className={styles.brand}>NetWise Pay</span>
         <span className={styles.sub}>Sign in to the merchant dashboard</span>
 
         {error ? (
@@ -70,7 +70,7 @@ export default async function LoginPage({
         </form>
 
         <span className={styles.footnote}>
-          Access is limited to Google accounts your NetWise administrator has approved.
+          Access is limited to Google accounts your NetWise Pay administrator has approved.
         </span>
       </div>
     </div>

@@ -84,7 +84,7 @@ export function Sidebar() {
           </svg>
         </span>
         <span className={styles.brandText}>
-          <span className={styles.brandName}>NetWise</span>
+          <span className={styles.brandName}>NetWise Pay</span>
           <span className={styles.brandSub}>Think Smart. Connect Wise.</span>
         </span>
       </div>

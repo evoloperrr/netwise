@@ -13,8 +13,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "NetWise | Payment Dashboard",
-  description: "NetWise merchant payment dashboard — think smart, connect wise.",
+  title: "NetWise Pay | Payment Dashboard",
+  description: "NetWise Pay merchant payment dashboard — think smart, connect wise.",
 };
 
 export default function RootLayout({

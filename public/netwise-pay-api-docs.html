@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NetWise Pay API</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-alt: #f5f6f8;
+    --border: #e4e6eb;
+    --border-strong: #d6d9e0;
+    --text: #0a0a0c;
+    --text-secondary: #5b6472;
+    --text-tertiary: #97a1b0;
+    --accent: #0ea5e9;
+    --accent-2: #22d3ee;
+    --accent-soft: #eaf7fe;
+    --accent-soft-border: #bce8fb;
+    --code-bg: #0b1220;
+    --code-bg-alt: #0f1a2e;
+    --code-text: #d7dceb;
+    --code-key: #7dd3fc;
+    --code-string: #86efac;
+    --success: #17875a;
+    --success-soft: #e9f8f1;
+    --success-border: #c6ecdb;
+    --warning: #b5680a;
+    --warning-soft: #fdf3e2;
+    --warning-border: #f6e0b3;
+    --danger: #c02b3c;
+    --danger-soft: #fcebee;
+    --danger-border: #f4c9d0;
+    --get: #0284c7;
+    --get-soft: #e6f7fe;
+    --post: #15803d;
+    --post-soft: #eafbf0;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-card: 0 1px 2px rgba(10, 10, 12, 0.03), 0 10px 24px -16px rgba(10, 10, 12, 0.1);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0d12;
+      --surface: #12151c;
+      --surface-alt: #171b24;
+      --border: #232833;
+      --border-strong: #2e343f;
+      --text: #f2f3f5;
+      --text-secondary: #9aa2b1;
+      --text-tertiary: #6b7484;
+      --accent: #38bdf8;
+      --accent-2: #67e8f9;
+      --accent-soft: #0f2431;
+      --accent-soft-border: #164156;
+      --code-bg: #06090f;
+      --code-bg-alt: #0a0f18;
+      --success: #34d399;
+      --success-soft: #0d2418;
+      --success-border: #164d33;
+      --warning: #fbbf24;
+      --warning-soft: #2a2008;
+      --warning-border: #4d3a0e;
+      --danger: #f87171;
+      --danger-soft: #2a1113;
+      --danger-border: #4d1c20;
+      --get: #38bdf8;
+      --get-soft: #0f2431;
+      --post: #34d399;
+      --post-soft: #0d2418;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0b0d12;
+    --surface: #12151c;
+    --surface-alt: #171b24;
+    --border: #232833;
+    --border-strong: #2e343f;
+    --text: #f2f3f5;
+    --text-secondary: #9aa2b1;
+    --text-tertiary: #6b7484;
+    --accent: #38bdf8;
+    --accent-2: #67e8f9;
+    --accent-soft: #0f2431;
+    --accent-soft-border: #164156;
+    --code-bg: #06090f;
+    --code-bg-alt: #0a0f18;
+    --success: #34d399;
+    --success-soft: #0d2418;
+    --success-border: #164d33;
+    --warning: #fbbf24;
+    --warning-soft: #2a2008;
+    --warning-border: #4d3a0e;
+    --danger: #f87171;
+    --danger-soft: #2a1113;
+    --danger-border: #4d1c20;
+    --get: #38bdf8;
+    --get-soft: #0f2431;
+    --post: #34d399;
+    --post-soft: #0d2418;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  a { color: var(--accent); }
+  code, pre, kbd { font-family: var(--mono); }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    background: var(--code-bg);
+    background-image: linear-gradient(180deg, var(--code-bg) 0%, var(--code-bg-alt) 100%);
+    color: #93a0b8;
+    padding: 28px 20px;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 9px; flex: none;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    display: grid; place-items: center; color: #05202b; font-weight: 800; font-size: 13px;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .brand-name { color: #fff; font-weight: 700; font-size: 14px; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 10.5px; color: #6b7690; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  .nav-group { margin-bottom: 22px; }
+  .nav-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #576177; padding: 0 8px 8px; }
+  .nav-link {
+    display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 7px;
+    font-size: 13px; color: #a7b0c2; text-decoration: none; transition: background 0.12s ease, color 0.12s ease;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  .nav-link .m { font-family: var(--mono); font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 4px; flex: none; }
+  .m-get { background: rgba(56,189,248,0.18); color: #7dd3fc; }
+  .m-post { background: rgba(52,211,153,0.18); color: #6ee7b7; }
+
+  main { padding: 44px 48px 100px; min-width: 0; }
+
+  .intro { max-width: 640px; margin-bottom: 40px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    background: var(--accent-soft); border: 1px solid var(--accent-soft-border);
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
+  }
+  h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px; text-wrap: balance; }
+  .lede { font-size: 15px; color: var(--text-secondary); margin: 0 0 22px; max-width: 60ch; }
+
+  .quickfacts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .quickfact {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 12px 14px; box-shadow: var(--shadow-card);
+  }
+  .quickfact-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 4px; }
+  .quickfact-value { font-family: var(--mono); font-size: 13px; color: var(--text); word-break: break-all; }
+
+  section.block { margin-bottom: 52px; scroll-margin-top: 24px; }
+  section.block > h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8px; }
+  section.block > p.section-desc { color: var(--text-secondary); font-size: 14px; margin: 0 0 24px; max-width: 68ch; }
+
+  .endpoint {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card); margin-bottom: 20px; overflow: hidden;
+  }
+  .endpoint-head { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .method { font-family: var(--mono); font-size: 12px; font-weight: 800; padding: 4px 9px; border-radius: 6px; letter-spacing: 0.02em; }
+  .method-get { background: var(--get-soft); color: var(--get); }
+  .method-post { background: var(--post-soft); color: var(--post); }
+  .path { font-family: var(--mono); font-size: 14px; color: var(--text); }
+  .endpoint-desc { padding: 14px 20px 0; font-size: 13.5px; color: var(--text-secondary); }
+
+  .endpoint-body { padding: 18px 20px 20px; display: grid; gap: 18px; }
+  @media (min-width: 860px) {
+    .endpoint-body.two-col { grid-template-columns: 1fr 1fr; }
+  }
+
+  .field-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .field-table th {
+    text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-tertiary); padding: 0 0 8px; border-bottom: 1px solid var(--border);
+  }
+  .field-table td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .field-table tr:last-child td { border-bottom: none; }
+  .field-table code { font-size: 12px; background: var(--surface-alt); padding: 1px 5px; border-radius: 4px; }
+  .req { color: var(--danger); font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; }
+  .opt { color: var(--text-tertiary); font-size: 10.5px; }
+
+  pre.code {
+    margin: 0; background: var(--code-bg); color: var(--code-text); border-radius: var(--radius-md);
+    padding: 14px 16px; font-size: 12.5px; line-height: 1.65; overflow-x: auto;
+  }
+  pre.code .k { color: var(--code-key); }
+  pre.code .s { color: var(--code-string); }
+  pre.code .c { color: #6b7690; }
+  .code-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 7px; }
+
+  .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .status-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow-card); }
+  .status-card h3 { margin: 0 0 8px; font-size: 13px; font-family: var(--mono); }
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid transparent; margin: 0 6px 6px 0; font-family: var(--mono); }
+  .pill-success { background: var(--success-soft); color: var(--success); border-color: var(--success-border); }
+  .pill-warning { background: var(--warning-soft); color: var(--warning); border-color: var(--warning-border); }
+  .pill-danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger-border); }
+  .status-card p { margin: 0; font-size: 12.5px; color: var(--text-secondary); }
+
+  table.err-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  table.err-table th { text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); background: var(--surface-alt); padding: 10px 14px; }
+  table.err-table td { padding: 10px 14px; border-top: 1px solid var(--border); }
+  table.err-table code { font-family: var(--mono); font-size: 12.5px; background: var(--surface-alt); padding: 1px 6px; border-radius: 4px; }
+
+  .note {
+    background: var(--accent-soft); border: 1px solid var(--accent-soft-border); border-radius: var(--radius-md);
+    padding: 12px 16px; font-size: 13px; color: var(--text); margin-top: 4px;
+  }
+  .note strong { color: var(--accent); }
+
+  footer { border-top: 1px solid var(--border); padding-top: 24px; margin-top: 20px; font-size: 12px; color: var(--text-tertiary); }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+    main { padding: 32px 20px 80px; }
+    .quickfacts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">N</span>
+      <span class="brand-text">
+        <span class="brand-name">NetWise Pay</span>
+        <span class="brand-sub">API Reference</span>
+      </span>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Getting started</div>
+      <a class="nav-link" href="#auth">Authentication</a>
+      <a class="nav-link" href="#statuses">Status values</a>
+      <a class="nav-link" href="#errors">Errors</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Cash-ins</div>
+      <a class="nav-link" href="#create-cash-in"><span class="m m-post">POST</span> Create</a>
+      <a class="nav-link" href="#get-cash-in"><span class="m m-get">GET</span> Retrieve</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Cash-outs</div>
+      <a class="nav-link" href="#create-cash-out"><span class="m m-post">POST</span> Create</a>
+      <a class="nav-link" href="#get-cash-out"><span class="m m-get">GET</span> Retrieve</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="intro">
+      <span class="eyebrow">v1 · members-site integration</span>
+      <h1>Connect your site to NetWise Pay</h1>
+      <p class="lede">
+        Four endpoints let your members website record payments and submit withdrawals, backed by the
+        same settlement dashboard your team already uses. You send us one request; we handle the
+        gateway call, the fee math, and the record-keeping.
+      </p>
+
+      <div class="quickfacts">
+        <div class="quickfact">
+          <div class="quickfact-label">Base URL</div>
+          <div class="quickfact-value">https://www.netwisepay.com</div>
+        </div>
+        <div class="quickfact">
+          <div class="quickfact-label">Content type</div>
+          <div class="quickfact-value">application/json</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="block" id="auth">
+      <h2>Authentication</h2>
+      <p class="section-desc">
+        Every request needs your API key in the <code>Authorization</code> header, as a Bearer token.
+        Find (and regenerate) your key under <strong>Settings → API key</strong> in the dashboard.
+      </p>
+      <pre class="code"><span class="c"># Header on every request</span>
+Authorization: Bearer <span class="s">nw_live_••••••••••••••••••••••••••••••••••••</span></pre>
+      <div class="note" style="margin-top: 14px;">
+        <strong>Keep this server-side.</strong> This key belongs to your backend, not the browser —
+        never call these endpoints from client-side JavaScript, and never commit the key to a repo.
+      </div>
+    </section>
+
+    <section class="block" id="create-cash-in">
+      <h2>Cash-ins</h2>
+      <p class="section-desc">
+        Records a payment your site has already collected from a member — GCash, Maya, GoTyme, QRPH,
+        or a card charge — so it shows up in the settlement dashboard with the correct fee split.
+      </p>
+
+      <div class="endpoint">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <span class="path">/api/v1/cash-ins</span>
+        </div>
+        <p class="endpoint-desc">Create a cash-in record. Fails with <code>409</code> if the reference was already used.</p>
+        <div class="endpoint-body two-col">
+          <div>
+            <div class="code-label">Body</div>
+            <table class="field-table">
+              <tr><th>Field</th><th>Type</th><th></th></tr>
+              <tr><td><code>reference</code></td><td>string</td><td><span class="req">required</span><br>Your own unique order ID</td></tr>
+              <tr><td><code>channel</code></td><td>string</td><td><span class="req">required</span><br><code>GCash</code> · <code>Maya</code> · <code>GoTyme</code> · <code>QRPH</code> · <code>Card</code></td></tr>
+              <tr><td><code>amount</code></td><td>number</td><td><span class="req">required</span><br>Gross amount in PHP</td></tr>
+            </table>
+          </div>
+          <div>
+            <div class="code-label">Request</div>
+            <pre class="code">curl -X POST \
+  https://www.netwisepay.com/api/v1/cash-ins \
+  -H <span class="s">"Authorization: Bearer nw_live_..."</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "reference": "ORDER-1042",
+    "channel": "GCash",
+    "amount": 500
+  }'</span></pre>
+          </div>
+        </div>
+        <div style="padding: 0 20px 20px;">
+          <div class="code-label">Response · 201 Created</div>
+          <pre class="code">{
+  <span class="k">"ok"</span>: <span class="s">true</span>,
+  <span class="k">"cashIn"</span>: {
+    <span class="k">"id"</span>: 14,
+    <span class="k">"reference"</span>: <span class="s">"ORDER-1042"</span>,
+    <span class="k">"channel"</span>: <span class="s">"GCash"</span>,
+    <span class="k">"grossPhp"</span>: 500,
+    <span class="k">"feePhp"</span>: 25,
+    <span class="k">"netCreditPhp"</span>: 475,
+    <span class="k">"status"</span>: <span class="s">"pending"</span>,
+    <span class="k">"createdAt"</span>: <span class="s">"2026-08-17T14:02:11.000Z"</span>
+  }
+}</pre>
+        </div>
+        <div style="padding: 0 20px 20px;">
+          <div class="note">
+            This endpoint <strong>records</strong> the payment — it does not itself open a GCash/Maya
+            prompt or generate a QR code. Collect payment on your own site first, then call this to
+            log it. A team member marks it <code>approved</code> once reconciled.
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="get-cash-in">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <span class="path">/api/v1/cash-ins?reference=ORDER-1042</span>
+        </div>
+        <p class="endpoint-desc">Look up a cash-in's current status by the reference you gave it.</p>
+        <div class="endpoint-body two-col">
+          <div>
+            <div class="code-label">Query</div>
+            <table class="field-table">
+              <tr><th>Param</th><th></th></tr>
+              <tr><td><code>reference</code></td><td><span class="req">required</span></td></tr>
+            </table>
+          </div>
+          <div>
+            <div class="code-label">Request</div>
+            <pre class="code">curl \
+  <span class="s">"https://www.netwisepay.com/api/v1/cash-ins?reference=ORDER-1042"</span> \
+  -H <span class="s">"Authorization: Bearer nw_live_..."</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="create-cash-out">
+      <h2>Cash-outs</h2>
+      <p class="section-desc">
+        Submits a real withdrawal. This calls VLPAY directly on your behalf — the recipient is paid
+        out for real once it succeeds, so treat every call as final.
+      </p>
+
+      <div class="endpoint">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <span class="path">/api/v1/cash-outs</span>
+        </div>
+        <p class="endpoint-desc">Create and submit a withdrawal for disbursement.</p>
+        <div class="endpoint-body two-col">
+          <div>
+            <div class="code-label">Body</div>
+            <table class="field-table">
+              <tr><th>Field</th><th>Type</th><th></th></tr>
+              <tr><td><code>amount</code></td><td>number</td><td><span class="req">required</span><br>PHP, within the dashboard's configured min/max</td></tr>
+              <tr><td><code>bank</code></td><td>string</td><td><span class="req">required</span><br>See supported values below</td></tr>
+              <tr><td><code>destination</code></td><td>string</td><td><span class="req">required</span><br>Account number, or mobile number for e-wallets</td></tr>
+              <tr><td><code>recipientName</code></td><td>string</td><td><span class="req">required</span></td></tr>
+            </table>
+          </div>
+          <div>
+            <div class="code-label">Request</div>
+            <pre class="code">curl -X POST \
+  https://www.netwisepay.com/api/v1/cash-outs \
+  -H <span class="s">"Authorization: Bearer nw_live_..."</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "amount": 500,
+    "bank": "GCash",
+    "destination": "09171234567",
+    "recipientName": "Juan Dela Cruz"
+  }'</span></pre>
+          </div>
+        </div>
+        <div style="padding: 0 20px 6px;">
+          <div class="code-label">Supported <code>bank</code> values</div>
+          <p style="font-size: 12.5px; color: var(--text-secondary); margin: 6px 0 14px;">
+            <code>GCash</code> · <code>Maya</code> · <code>GoTyme Bank</code> · <code>Maya Bank</code> ·
+            <code>BDO Unibank</code> · <code>BPI</code> · <code>UnionBank</code>
+          </p>
+          <div class="code-label">Response · 201 Created</div>
+          <pre class="code">{
+  <span class="k">"ok"</span>: <span class="s">true</span>,
+  <span class="k">"cashOut"</span>: {
+    <span class="k">"id"</span>: 9,
+    <span class="k">"reference"</span>: <span class="s">"NW-1755440531-a1b2c3"</span>,
+    <span class="k">"recipientName"</span>: <span class="s">"Juan Dela Cruz"</span>,
+    <span class="k">"destination"</span>: <span class="s">"09171234567"</span>,
+    <span class="k">"bank"</span>: <span class="s">"GCash"</span>,
+    <span class="k">"grossPhp"</span>: 500,
+    <span class="k">"feePhp"</span>: 25,
+    <span class="k">"netPhp"</span>: 475,
+    <span class="k">"status"</span>: <span class="s">"processing"</span>,
+    <span class="k">"vlpayOrderNo"</span>: <span class="s">"DIS26010617538674688"</span>
+  }
+}</pre>
+          <div class="note" style="margin-top: 14px;">
+            <strong><code>processing</code> is not final.</strong> VLPAY confirms success or failure
+            asynchronously. Poll <a href="#get-cash-out">GET below</a> using the <code>reference</code>
+            you received until <code>status</code> becomes <code>approved</code> or <code>rejected</code>.
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="get-cash-out">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <span class="path">/api/v1/cash-outs?reference=NW-...</span>
+        </div>
+        <p class="endpoint-desc">Look up a withdrawal's current status.</p>
+        <div class="endpoint-body two-col">
+          <div>
+            <div class="code-label">Query</div>
+            <table class="field-table">
+              <tr><th>Param</th><th></th></tr>
+              <tr><td><code>reference</code></td><td><span class="req">required</span></td></tr>
+            </table>
+          </div>
+          <div>
+            <div class="code-label">Request</div>
+            <pre class="code">curl \
+  <span class="s">"https://www.netwisepay.com/api/v1/cash-outs?reference=NW-1755440531-a1b2c3"</span> \
+  -H <span class="s">"Authorization: Bearer nw_live_..."</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="statuses">
+      <h2>Status values</h2>
+      <p class="section-desc">What each status on a record means.</p>
+
+      <div class="status-grid">
+        <div class="status-card">
+          <h3>CashIn.status</h3>
+          <span class="pill pill-warning">pending</span>
+          <span class="pill pill-success">approved</span>
+          <span class="pill pill-danger">rejected</span>
+          <p>Set by a team member after reconciling against what actually landed. Not automated.</p>
+        </div>
+        <div class="status-card">
+          <h3>CashOut.status</h3>
+          <span class="pill pill-warning">processing</span>
+          <span class="pill pill-success">approved</span>
+          <span class="pill pill-danger">rejected</span>
+          <p><code>processing</code> → VLPAY confirms via webhook → <code>approved</code>/<code>rejected</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="errors">
+      <h2>Errors</h2>
+      <p class="section-desc">Every error responds with <code>{ "ok": false, "error": "..." }</code> and one of these HTTP statuses.</p>
+
+      <table class="err-table">
+        <tr><th>Status</th><th>Meaning</th></tr>
+        <tr><td><code>401</code></td><td>Missing or invalid <code>Authorization</code> header.</td></tr>
+        <tr><td><code>422</code></td><td>A required field is missing or out of range — <code>error</code> says which.</td></tr>
+        <tr><td><code>409</code></td><td><em>Cash-ins only:</em> that <code>reference</code> was already used.</td></tr>
+        <tr><td><code>503</code></td><td><em>Cash-outs only:</em> withdrawals are currently disabled from Settings.</td></tr>
+        <tr><td><code>404</code></td><td><em>GET only:</em> no record with that <code>reference</code>.</td></tr>
+      </table>
+    </section>
+
+    <footer>
+      NetWise Pay API v1 · Questions about a specific integration go to your NetWise Pay contact, not VLPAY support.
+    </footer>
+  </main>
+</div>
+</body>
+</html>

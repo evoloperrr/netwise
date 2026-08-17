@@ -88,6 +88,18 @@ curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https:/
   -H "Content-Type: application/json" \\
   -d '{"amount":500,"bank":"GCash","destination":"09171234567","recipientName":"Juan Dela Cruz"}'`}
         </pre>
+        <a
+          href="/netwise-pay-api-docs.html"
+          download="NetWise-Pay-API-Docs.html"
+          className={styles.ghostButton}
+          style={{ marginTop: 12, textDecoration: "none" }}
+        >
+          <svg viewBox="0 0 20 20" fill="none">
+            <path d="M10 3v9.5M10 12.5 6.7 9.2M10 12.5l3.3-3.3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 14.5v1.8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Download full API docs (.html)
+        </a>
       </div>
     </section>
   );

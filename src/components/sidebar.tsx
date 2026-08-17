@@ -10,6 +10,7 @@ type NavItem = {
   href: string;
   label: string;
   icon: React.ReactNode;
+  newTab?: boolean;
 };
 
 const items: NavItem[] = [
@@ -58,6 +59,18 @@ const items: NavItem[] = [
       </svg>
     ),
   },
+  {
+    href: "/docs",
+    label: "Documentation",
+    newTab: true,
+    icon: (
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.5 3.5h6l3 3v10a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M11.5 3.5V7h3" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M7 10.5h6M7 13.5h6M7 7.5h2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      </svg>
+    ),
+  },
 ];
 
 function BrandMark() {
@@ -94,6 +107,8 @@ function NavList({ pathname, onNavigate }: { pathname: string; onNavigate?: () =
             key={item.href}
             href={item.href}
             onClick={onNavigate}
+            target={item.newTab ? "_blank" : undefined}
+            rel={item.newTab ? "noopener noreferrer" : undefined}
             className={`${styles.navItem} ${active ? styles.navItemActive : ""}`}
           >
             <span className={styles.navIcon}>{item.icon}</span>

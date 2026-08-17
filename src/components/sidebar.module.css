@@ -205,6 +205,33 @@
   transform: translateY(0.5px);
 }
 
+.accountChip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.accountAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  flex: none;
+  object-fit: cover;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-strong);
+}
+
+.accountEmail {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .content {
   padding: 28px 32px 60px;
   max-width: 1320px;

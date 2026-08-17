@@ -76,10 +76,17 @@ export function ApiKeyCard({ apiKey: initialApiKey }: { apiKey: string }) {
             overflowX: "auto",
           }}
         >
-{`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://www.netwisepay.com"}/api/v1/cash-ins \\
+{`# Cash-in
+curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://www.netwisepay.com"}/api/v1/cash-ins \\
   -H "Authorization: Bearer ${revealed ? apiKey : "<API_KEY>"}" \\
   -H "Content-Type: application/json" \\
-  -d '{"reference":"ORDER-123","channel":"GCash","amount":500}'`}
+  -d '{"reference":"ORDER-123","channel":"GCash","amount":500}'
+
+# Cash-out (withdrawal)
+curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://www.netwisepay.com"}/api/v1/cash-outs \\
+  -H "Authorization: Bearer ${revealed ? apiKey : "<API_KEY>"}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"amount":500,"bank":"GCash","destination":"09171234567","recipientName":"Juan Dela Cruz"}'`}
         </pre>
       </div>
     </section>

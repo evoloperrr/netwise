@@ -56,6 +56,7 @@ export default async function CashOutsPage() {
                       <td className={styles.mono}>{formatPhp(row.netPhp)}</td>
                       <td>
                         <StatusBadge status={row.status} />
+                        {row.remark ? <div className={styles.cellMuted}>{row.remark}</div> : null}
                       </td>
                       <td className={styles.cellMuted}>{formatDate(row.createdAt.toISOString())}</td>
                     </tr>

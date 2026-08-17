@@ -29,6 +29,7 @@ model CashIn {
 // A single withdrawal paid out from the gateway balance.
 model CashOut {
   id            Int      @id @default(autoincrement())
+  reference     String   @unique // sent to VLPAY as metadata.referenceId
   recipientName String
   destination   String // account number / e-wallet handle
   bank          String
@@ -37,6 +38,7 @@ model CashOut {
   netPhp        Float
   status        String   @default("processing") // "processing" | "approved" | "rejected"
   remark        String?
+  vlpayOrderNo  String? // VLPAY's disburse_no, for support/reconciliation
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

@@ -60,6 +60,28 @@ export function ApiKeyCard({ apiKey: initialApiKey }: { apiKey: string }) {
           </div>
         </div>
       </div>
+      <div style={{ padding: "0 22px 22px" }}>
+        <p className={styles.hint} style={{ marginBottom: 8 }}>
+          Record a payment from your own site:
+        </p>
+        <pre
+          style={{
+            margin: 0,
+            padding: "12px 14px",
+            background: "var(--surface-alt)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-sm)",
+            fontSize: 12,
+            lineHeight: 1.6,
+            overflowX: "auto",
+          }}
+        >
+{`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://www.netwisepay.com"}/api/v1/cash-ins \\
+  -H "Authorization: Bearer ${revealed ? apiKey : "<API_KEY>"}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"reference":"ORDER-123","channel":"GCash","amount":500}'`}
+        </pre>
+      </div>
     </section>
   );
 }

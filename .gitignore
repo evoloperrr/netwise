@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+.env
+.env*.local
+npm-debug.log*
+.DS_Store
+
+/src/generated/prisma
+/dev.db
+/dev.db-journal
+
+.agents/
+.claude/
+.windsurf/

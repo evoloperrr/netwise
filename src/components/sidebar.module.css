@@ -1,0 +1,244 @@
+.shell {
+  display: grid;
+  grid-template-columns: 264px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-bg-alt) 100%);
+  color: var(--sidebar-text);
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 10px 14px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  flex: none;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.brandName {
+  color: #fff;
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brandSub {
+  font-size: 11px;
+  color: var(--sidebar-text);
+  letter-spacing: 0.02em;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navGroupLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5c6784;
+  padding: 10px 12px 6px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--sidebar-text);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #d7dceb;
+}
+
+.navItemActive {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-text-active);
+}
+
+.navIcon {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  opacity: 0.9;
+}
+
+.navFooter {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.envPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 11.5px;
+  color: var(--sidebar-text);
+}
+
+.envDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #f2b035;
+  flex: none;
+  box-shadow: 0 0 0 3px rgba(242, 176, 53, 0.18);
+}
+
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topbarTitle h1 {
+  margin: 0;
+  font-size: 21px;
+  letter-spacing: -0.015em;
+}
+
+.topbarTitle p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.topbarActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ghostButton svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.ghostButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 6px 16px -10px rgba(14, 165, 233, 0.4);
+}
+
+.ghostButton:active {
+  transform: translateY(0.5px);
+}
+
+.content {
+  padding: 28px 32px 60px;
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 920px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+  }
+  .brand {
+    border-bottom: none;
+    padding: 0 10px 0 0;
+  }
+  .nav {
+    flex-direction: row;
+  }
+  .navGroupLabel {
+    display: none;
+  }
+  .navFooter {
+    display: none;
+  }
+  .topbar,
+  .content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

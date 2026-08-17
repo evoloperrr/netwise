@@ -1,0 +1,92 @@
+:root {
+  --bg: #f5f6f9;
+  --surface: #ffffff;
+  --surface-alt: #fafbfc;
+  --border: #e6e8ee;
+  --border-strong: #d7dae3;
+
+  --sidebar-bg: #0b1220;
+  --sidebar-bg-alt: #0f1a2e;
+  --sidebar-text: #93a0b8;
+  --sidebar-text-active: #ffffff;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.07);
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+
+  --text-primary: #10192e;
+  --text-secondary: #5b6478;
+  --text-tertiary: #97a1b5;
+
+  --accent: #0ea5e9;
+  --accent-strong: #0284c7;
+  --accent-secondary: #22d3ee;
+  --accent-soft: #e6f7fe;
+  --accent-soft-border: #bce8fb;
+
+  --success: #17875a;
+  --success-soft: #e9f8f1;
+  --success-border: #c6ecdb;
+
+  --warning: #b5680a;
+  --warning-soft: #fdf3e2;
+  --warning-border: #f6e0b3;
+
+  --danger: #c02b3c;
+  --danger-soft: #fcebee;
+  --danger-border: #f4c9d0;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow-card: 0 1px 1px rgba(16, 25, 46, 0.03), 0 12px 28px -16px rgba(16, 25, 46, 0.14);
+  --shadow-pop: 0 4px 8px rgba(16, 25, 46, 0.04), 0 24px 48px -20px rgba(16, 25, 46, 0.22);
+
+  --font-sans:
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--accent-soft-border);
+}
+
+/* Scrollbar polish -- subtle, not the browser default */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid var(--bg);
+}

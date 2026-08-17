@@ -1,0 +1,62 @@
+// NetWise payment dashboard -- data schema.
+// PostgreSQL (Neon) for production.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// A single payment received through the gateway.
+model CashIn {
+  id           Int      @id @default(autoincrement())
+  reference    String   @unique
+  channel      String // "GCash" | "Maya" | "GoTyme" | "QRPH" | "Card"
+  grossPhp     Float
+  feePhp       Float
+  netCreditPhp Float
+  status       String   @default("pending") // "pending" | "approved" | "rejected"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// A single withdrawal paid out from the gateway balance.
+model CashOut {
+  id            Int      @id @default(autoincrement())
+  recipientName String
+  destination   String // account number / e-wallet handle
+  bank          String
+  grossPhp      Float
+  feePhp        Float
+  netPhp        Float
+  status        String   @default("processing") // "processing" | "approved" | "rejected"
+  remark        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Who can view/manage this dashboard.
+model AccessGrant {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  role      String   @default("view_only") // "view_only" | "manage"
+  createdAt DateTime @default(now())
+}
+
+// Singleton row (id is always 1) holding payout policy for the dashboard.
+model GatewayConfig {
+  id                   Int     @id @default(1)
+  minPerTransactionPhp Float   @default(100)
+  maxPerTransactionPhp Float   @default(5000)
+  processingFeePhp     Float   @default(25)
+  cashOutsEnabled      Boolean @default(true)
+}

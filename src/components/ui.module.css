@@ -1,0 +1,347 @@
+/* Shared building blocks: metric cards, panels, tables, badges, forms. */
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1080px) {
+  .metricGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.metricCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 20px 18px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metricHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metricLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.metricIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.metricValue {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.metricTrend {
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trendUp {
+  color: var(--success);
+}
+
+.trendDown {
+  color: var(--danger);
+}
+
+.trendNeutral {
+  color: var(--text-tertiary);
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panelHeadText h2 {
+  margin: 0;
+  font-size: 15.5px;
+  letter-spacing: -0.01em;
+}
+
+.panelHeadText p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.livePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--success);
+  background: var(--success-soft);
+  border: 1px solid var(--success-border);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--success);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.tableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.tableWrap thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  background: var(--surface-alt);
+  padding: 11px 22px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.tableWrap tbody td {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.tableWrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tableWrap tbody tr:hover {
+  background: var(--surface-alt);
+}
+
+.cellPrimary {
+  font-weight: 600;
+}
+
+.cellMuted {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+}
+
+.badgeSuccess {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: var(--success-border);
+}
+
+.badgeWarning {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-color: var(--warning-border);
+}
+
+.badgeDanger {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+
+.badgeNeutral {
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+}
+
+/* Forms */
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 22px;
+}
+
+.formGridFull {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.field input,
+.field select {
+  height: 42px;
+  padding: 0 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13.5px;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.hint {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}
+
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px 22px;
+}
+
+.primaryButton {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -8px rgba(43, 82, 232, 0.55);
+}
+
+.primaryButton:hover {
+  background: var(--accent-strong);
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.twoColumn {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .twoColumn {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summaryList {
+  padding: 6px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13px;
+}
+
+.summaryRow:last-child {
+  border-bottom: none;
+}
+
+.summaryRowLabel {
+  color: var(--text-secondary);
+}
+
+.summaryRowValue {
+  font-weight: 700;
+}

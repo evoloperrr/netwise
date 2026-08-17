@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   }
 
   const config = await getGatewayConfig();
-  const feePhp = config.processingFeePhp;
+  const feePhp = Math.round(grossPhp * (config.cashInFeePercent / 100) * 100) / 100;
   const netCreditPhp = Math.max(grossPhp - feePhp, 0);
 
   const cashIn = await prisma.cashIn.create({

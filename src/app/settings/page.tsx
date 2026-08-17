@@ -28,7 +28,11 @@ export default async function SettingsPage() {
             </span>
           </div>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Processing fee</span>
+            <span className={styles.summaryRowLabel}>Cash-in fee</span>
+            <span className={styles.summaryRowValue}>{config.cashInFeePercent}% of gross</span>
+          </div>
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryRowLabel}>Cash-out fee</span>
             <span className={styles.summaryRowValue}>{formatPhp(config.processingFeePhp)} flat</span>
           </div>
           <div className={styles.summaryRow}>

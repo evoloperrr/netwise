@@ -104,7 +104,8 @@ export default function DocsPage() {
               <span className={styles.path}>/api/v1/cash-ins</span>
             </div>
             <p className={styles.endpointDesc}>
-              Create a cash-in record. Fails with <code>409</code> if the reference was already used.
+              Create a cash-in record. A 2.5% processing fee is deducted from <code>amount</code> automatically
+              (configurable in Settings). Fails with <code>409</code> if the reference was already used.
             </p>
             <div className={`${styles.endpointBody} ${styles.twoCol}`}>
               <div>
@@ -178,8 +179,8 @@ export default function DocsPage() {
     "reference": "ORDER-1042",
     "channel": "GCash",
     "grossPhp": 500,
-    "feePhp": 25,
-    "netCreditPhp": 475,
+    "feePhp": 12.5,
+    "netCreditPhp": 487.5,
     "status": "pending",
     "createdAt": "2026-08-17T14:02:11.000Z"
   }

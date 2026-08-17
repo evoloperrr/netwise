@@ -59,7 +59,8 @@ model GatewayConfig {
   id                   Int     @id @default(1)
   minPerTransactionPhp Float   @default(100)
   maxPerTransactionPhp Float   @default(5000)
-  processingFeePhp     Float   @default(25)
+  processingFeePhp     Float   @default(25) // flat fee, cash-outs only
+  cashInFeePercent     Float   @default(2.5) // % of gross, cash-ins only
   cashOutsEnabled      Boolean @default(true)
   apiKey               String  @unique
 }

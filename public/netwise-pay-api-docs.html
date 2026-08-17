@@ -327,7 +327,7 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
           <span class="method method-post">POST</span>
           <span class="path">/api/v1/cash-ins</span>
         </div>
-        <p class="endpoint-desc">Create a cash-in record. Fails with <code>409</code> if the reference was already used.</p>
+        <p class="endpoint-desc">Create a cash-in record. A 2.5% processing fee is deducted from <code>amount</code> automatically (configurable in Settings). Fails with <code>409</code> if the reference was already used.</p>
         <div class="endpoint-body two-col">
           <div>
             <div class="code-label">Body</div>
@@ -360,8 +360,8 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
     <span class="k">"reference"</span>: <span class="s">"ORDER-1042"</span>,
     <span class="k">"channel"</span>: <span class="s">"GCash"</span>,
     <span class="k">"grossPhp"</span>: 500,
-    <span class="k">"feePhp"</span>: 25,
-    <span class="k">"netCreditPhp"</span>: 475,
+    <span class="k">"feePhp"</span>: 12.5,
+    <span class="k">"netCreditPhp"</span>: 487.5,
     <span class="k">"status"</span>: <span class="s">"pending"</span>,
     <span class="k">"createdAt"</span>: <span class="s">"2026-08-17T14:02:11.000Z"</span>
   }

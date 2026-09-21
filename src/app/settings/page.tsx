@@ -28,15 +28,7 @@ export default async function SettingsPage() {
             </span>
           </div>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Cash-in fee (VLPAY)</span>
-            <span className={styles.summaryRowValue}>{config.cashInVlpayFeePercent}% of gross</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Cash-in fee (our markup)</span>
-            <span className={styles.summaryRowValue}>{config.cashInMarkupPercent}% of gross</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Cash-in fee (total)</span>
+            <span className={styles.summaryRowLabel}>Cash-in fee</span>
             <span className={styles.summaryRowValue}>
               {config.cashInVlpayFeePercent + config.cashInMarkupPercent}% of gross
             </span>

@@ -22,8 +22,6 @@ export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) 
 
   const totalFeePercent = vlpayFeePercent + markupPercent;
   const numericAmount = Number(amount || 0);
-  const vlpayFeePhp = numericAmount > 0 ? Math.round(numericAmount * (vlpayFeePercent / 100) * 100) / 100 : 0;
-  const markupFeePhp = numericAmount > 0 ? Math.round(numericAmount * (markupPercent / 100) * 100) / 100 : 0;
   const totalFeePhp = numericAmount > 0 ? Math.round(numericAmount * (totalFeePercent / 100) * 100) / 100 : 0;
   const netCredit = numericAmount > 0 ? Math.max(numericAmount - totalFeePhp, 0) : 0;
   const isValid = numericAmount > 0;
@@ -98,15 +96,7 @@ export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) 
 
         <div className={styles.summaryList}>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>VLPAY fee ({vlpayFeePercent}%)</span>
-            <span className={styles.summaryRowValue}>{formatPhp(vlpayFeePhp)}</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Our markup ({markupPercent}%)</span>
-            <span className={styles.summaryRowValue}>{formatPhp(markupFeePhp)}</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Total charge ({totalFeePercent}%)</span>
+            <span className={styles.summaryRowLabel}>Charge ({totalFeePercent}%)</span>
             <span className={styles.summaryRowValue}>{formatPhp(totalFeePhp)}</span>
           </div>
           <div className={styles.summaryRow}>

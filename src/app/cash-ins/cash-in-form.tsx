@@ -59,7 +59,7 @@ export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) 
     <section className={styles.panel}>
       <div className={styles.panelHead}>
         <div className={styles.panelHeadText}>
-          <h2>New cash-in</h2>
+          <h2>Merchant Cash-in</h2>
           <p>Manually record a payment received outside the API.</p>
         </div>
       </div>
@@ -88,7 +88,9 @@ export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) 
               onChange={(event) => setChannel(event.target.value as (typeof CHANNELS)[number])}
             >
               {CHANNELS.map((option) => (
-                <option key={option}>{option}</option>
+                <option key={option} disabled={option === "Card"}>
+                  {option === "Card" ? "Card (unavailable)" : option}
+                </option>
               ))}
             </select>
           </div>

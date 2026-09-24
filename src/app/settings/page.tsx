@@ -28,7 +28,7 @@ export default async function SettingsPage() {
             </span>
           </div>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Transaction fee</span>
+            <span className={styles.summaryRowLabel}>Transaction fee (users cash-in / checkout)</span>
             <span className={styles.summaryRowValue}>
               {config.cashInVlpayFeePercent + config.cashInMarkupPercent}% of gross
             </span>
@@ -38,8 +38,8 @@ export default async function SettingsPage() {
             <span className={styles.summaryRowValue}>{config.dashboardCashInFeePercent}% of gross</span>
           </div>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Cash-out fee</span>
-            <span className={styles.summaryRowValue}>{formatPhp(config.processingFeePhp)} flat</span>
+            <span className={styles.summaryRowLabel}>Transaction fee (cash-out)</span>
+            <span className={styles.summaryRowValue}>{formatPhp(config.processingFeePhp)} per transaction</span>
           </div>
           <div className={styles.summaryRow}>
             <span className={styles.summaryRowLabel}>Cash-outs</span>

@@ -128,7 +128,7 @@ export function CashOutForm({ minPerTransactionPhp, maxPerTransactionPhp, proces
 
         <div className={styles.summaryList}>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Processing fee</span>
+            <span className={styles.summaryRowLabel}>Transaction fee</span>
             <span className={styles.summaryRowValue}>{formatPhp(processingFeePhp)}</span>
           </div>
           <div className={styles.summaryRow}>

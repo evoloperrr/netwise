@@ -15,9 +15,14 @@ export type CreateCashInResult =
   | { ok: true; cashIn: Awaited<ReturnType<typeof prisma.cashIn.create>> }
   | { ok: false; error: string; status: number };
 
-async function computeCashInFee(grossPhp: number) {
+// "dashboard": a merchant recording a cash-in in their own dashboard.
+// "api": a payment from the merchant's users (public API / checkout).
+export type CashInSource = "dashboard" | "api";
+
+async function computeCashInFee(grossPhp: number, source: CashInSource) {
   const config = await getGatewayConfig();
-  const feePercent = config.cashInVlpayFeePercent + config.cashInMarkupPercent;
+  const feePercent =
+    source === "dashboard" ? config.dashboardCashInFeePercent : config.cashInVlpayFeePercent + config.cashInMarkupPercent;
   const feePhp = Math.round(grossPhp * (feePercent / 100) * 100) / 100;
   return { feePhp, netCreditPhp: Math.max(grossPhp - feePhp, 0) };
 }
@@ -27,7 +32,7 @@ async function computeCashInFee(grossPhp: number) {
 // recorded cash-in goes through the exact same validation and fee logic as
 // one reported by an integration. The dashboard form leaves `reference`
 // blank (it has no merchant order id to record); the public API requires it.
-export async function createCashIn(input: CreateCashInInput): Promise<CreateCashInResult> {
+export async function createCashIn(input: CreateCashInInput, source: CashInSource): Promise<CreateCashInResult> {
   const { channel, amount } = input;
 
   if (typeof channel !== "string" || !CHANNELS.includes(channel as (typeof CHANNELS)[number])) {
@@ -49,7 +54,7 @@ export async function createCashIn(input: CreateCashInInput): Promise<CreateCash
     return { ok: false, error: "That reference already exists.", status: 409 };
   }
 
-  const { feePhp, netCreditPhp } = await computeCashInFee(grossPhp);
+  const { feePhp, netCreditPhp } = await computeCashInFee(grossPhp, source);
 
   const cashIn = await prisma.cashIn.create({
     data: {
@@ -145,7 +150,7 @@ export async function createCheckout(input: CreateCheckoutInput): Promise<Create
     return { ok: false, error: payin.errorMessage, status: 502 };
   }
 
-  const { feePhp, netCreditPhp } = await computeCashInFee(grossPhp);
+  const { feePhp, netCreditPhp } = await computeCashInFee(grossPhp, "api");
 
   const cashIn = await prisma.cashIn.create({
     data: {

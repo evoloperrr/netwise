@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { verifyApiKey } from "@/lib/api-auth";
 import { createCheckout } from "@/lib/cash-ins";
+import { toPublicCashIn } from "@/lib/public-api";
 
 // Public API: start a hosted checkout for a customer. Returns a checkoutUrl to
 // redirect the customer to; poll GET /api/v1/cash-ins?reference=... for the
@@ -21,9 +22,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
   }
 
-  const { reference, channel, grossPhp, feePhp, netCreditPhp, status, checkoutUrl, createdAt } = result.cashIn;
-  return NextResponse.json(
-    { ok: true, checkout: { reference, channel, grossPhp, feePhp, netCreditPhp, status, checkoutUrl, createdAt } },
-    { status: 201 },
-  );
+  const { id, ...checkout } = toPublicCashIn(result.cashIn);
+  return NextResponse.json({ ok: true, checkout }, { status: 201 });
 }

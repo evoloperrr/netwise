@@ -535,7 +535,8 @@ export default function DocsPage() {
     "bank": "GCash",
     "grossPhp": 500,
     "status": "processing",
-    "vlpayOrderNo": "DIS26010617538674688"
+    "remark": null,
+    "createdAt": "2026-08-17T14:02:11.000Z"
   }
 }`}
               </pre>

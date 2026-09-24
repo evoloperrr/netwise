@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { verifyApiKey } from "@/lib/api-auth";
 import { createCashIn } from "@/lib/cash-ins";
+import { toPublicCashIn } from "@/lib/public-api";
 import { prisma } from "@/lib/prisma";
 
 // Public API for NetWise's own site/integrations to record a payment
@@ -19,12 +20,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "reference is required." }, { status: 422 });
   }
 
-  const result = await createCashIn({ reference, channel, amount });
+  const result = await createCashIn({ reference, channel, amount }, "api");
   if (!result.ok) {
     return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
   }
 
-  return NextResponse.json({ ok: true, cashIn: result.cashIn }, { status: 201 });
+  return NextResponse.json({ ok: true, cashIn: toPublicCashIn(result.cashIn) }, { status: 201 });
 }
 
 // GET /api/v1/cash-ins?reference=... -- check a payment's status.
@@ -43,5 +44,5 @@ export async function GET(request: Request) {
     return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
   }
 
-  return NextResponse.json({ ok: true, cashIn });
+  return NextResponse.json({ ok: true, cashIn: toPublicCashIn(cashIn) });
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { verifyApiKey } from "@/lib/api-auth";
 import { createCashOut } from "@/lib/cash-outs";
+import { toPublicCashOut } from "@/lib/public-api";
 import { prisma } from "@/lib/prisma";
 
 // Public API for NetWise's members website to submit a withdrawal on a
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
   }
 
-  return NextResponse.json({ ok: true, cashOut: result.cashOut }, { status: 201 });
+  return NextResponse.json({ ok: true, cashOut: toPublicCashOut(result.cashOut) }, { status: 201 });
 }
 
 // GET /api/v1/cash-outs?reference=... -- check a withdrawal's status.
@@ -44,5 +45,5 @@ export async function GET(request: Request) {
     return NextResponse.json({ ok: false, error: "Not found." }, { status: 404 });
   }
 
-  return NextResponse.json({ ok: true, cashOut });
+  return NextResponse.json({ ok: true, cashOut: toPublicCashOut(cashOut) });
 }

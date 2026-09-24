@@ -63,7 +63,8 @@ model GatewayConfig {
   maxPerTransactionPhp Float   @default(5000)
   processingFeePhp     Float   @default(25) // flat fee, cash-outs only
   cashInVlpayFeePercent Float  @default(1.3) // % of gross, cash-ins only -- VLPAY's cut
-  cashInMarkupPercent  Float   @default(0.2) // % of gross, cash-ins only -- our markup on top of VLPAY's cut
+  cashInMarkupPercent  Float   @default(1.2) // % of gross, cash-ins only -- our markup on top of VLPAY's cut (1.3 + 1.2 = 2.5% total)
+  dashboardCashInFeePercent Float @default(1.5) // % of gross, cash-ins recorded from this dashboard by the merchant
   cashOutsEnabled      Boolean @default(true)
   apiKey               String  @unique
 }

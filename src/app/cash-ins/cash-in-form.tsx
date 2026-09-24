@@ -8,11 +8,10 @@ import { CHANNELS } from "@/lib/channels";
 import { formatPhp } from "@/lib/format";
 
 type CashInFormProps = {
-  vlpayFeePercent: number;
-  markupPercent: number;
+  feePercent: number;
 };
 
-export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) {
+export function CashInForm({ feePercent }: CashInFormProps) {
   const router = useRouter();
   const [amount, setAmount] = useState("");
   const [channel, setChannel] = useState<(typeof CHANNELS)[number]>(CHANNELS[0]);
@@ -20,9 +19,8 @@ export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const totalFeePercent = vlpayFeePercent + markupPercent;
   const numericAmount = Number(amount || 0);
-  const totalFeePhp = numericAmount > 0 ? Math.round(numericAmount * (totalFeePercent / 100) * 100) / 100 : 0;
+  const totalFeePhp = numericAmount > 0 ? Math.round(numericAmount * (feePercent / 100) * 100) / 100 : 0;
   const netCredit = numericAmount > 0 ? Math.max(numericAmount - totalFeePhp, 0) : 0;
   const isValid = numericAmount > 0;
 
@@ -98,7 +96,7 @@ export function CashInForm({ vlpayFeePercent, markupPercent }: CashInFormProps) 
 
         <div className={styles.summaryList}>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryRowLabel}>Charge ({totalFeePercent}%)</span>
+            <span className={styles.summaryRowLabel}>Transaction fee ({feePercent}%)</span>
             <span className={styles.summaryRowValue}>{formatPhp(totalFeePhp)}</span>
           </div>
           <div className={styles.summaryRow}>

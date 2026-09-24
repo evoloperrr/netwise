@@ -148,7 +148,7 @@ export default async function DashboardPage() {
                   <th>Reference</th>
                   <th>Channel</th>
                   <th>Gross</th>
-                  <th>Fee</th>
+                  <th>Transaction fee</th>
                   <th>Status</th>
                   <th>Date</th>
                 </tr>

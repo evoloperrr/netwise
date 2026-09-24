@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   }
 
   const { channel, amount } = body as { channel?: unknown; amount?: unknown };
-  const result = await createCashIn({ channel, amount });
+  const result = await createCashIn({ channel, amount }, "dashboard");
   if (!result.ok) {
     return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
   }

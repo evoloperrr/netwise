@@ -26,7 +26,7 @@ export default async function CashInsPage() {
             <div className={styles.panelHeadText}>
               <h2>Payment activity</h2>
               <p>
-                {formatPhp(totalGross)} total gross · {formatPhp(totalFees)} in fees
+                {formatPhp(totalGross)} total gross · {formatPhp(totalFees)} in transaction fees
               </p>
             </div>
             <span className={styles.livePill}>
@@ -44,7 +44,7 @@ export default async function CashInsPage() {
                     <th>Reference</th>
                     <th>Channel</th>
                     <th>Gross</th>
-                    <th>Fee</th>
+                    <th>Transaction fee</th>
                     <th>Net credit</th>
                     <th>Status</th>
                     <th>Date</th>
@@ -70,7 +70,7 @@ export default async function CashInsPage() {
           )}
         </section>
 
-        <CashInForm vlpayFeePercent={config.cashInVlpayFeePercent} markupPercent={config.cashInMarkupPercent} />
+        <CashInForm feePercent={config.dashboardCashInFeePercent} />
       </div>
     </PageShell>
   );

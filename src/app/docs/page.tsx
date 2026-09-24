@@ -70,7 +70,7 @@ export default function DocsPage() {
           <p className={styles.lede}>
             Take payments with a hosted checkout, record payments you collected yourself, and submit withdrawals —
             all backed by the same settlement dashboard your team already uses. You send us one request; we handle
-            the gateway call, the fee math, and the record-keeping.
+            the gateway call and the record-keeping.
           </p>
 
           <div className={styles.quickfacts}>
@@ -138,9 +138,8 @@ export default function DocsPage() {
               <span className={styles.path}>/api/v1/checkout</span>
             </div>
             <p className={styles.endpointDesc}>
-              Create a checkout. A 1.5% processing fee is deducted from <code>amount</code> automatically — the
-              customer pays the full <code>amount</code>, and <code>netCreditPhp</code> is what you are credited.
-              Fails with <code>409</code> if the reference was already used.
+              Create a checkout for the customer to pay. Fails with <code>409</code> if the reference was already
+              used.
             </p>
             <div className={`${styles.endpointBody} ${styles.twoCol}`}>
               <div>
@@ -231,8 +230,6 @@ export default function DocsPage() {
     "reference": "ORDER-1042",
     "channel": "GCash",
     "grossPhp": 500,
-    "feePhp": 7.5,
-    "netCreditPhp": 492.5,
     "status": "pending",
     "checkoutUrl": "https://checkout.vpayd.shop/payment?orderNo=DIR26010617538674688",
     "createdAt": "2026-08-17T14:02:11.000Z"
@@ -297,7 +294,7 @@ export default function DocsPage() {
           <h2>Cash-ins</h2>
           <p className={styles.sectionDesc}>
             Records a payment your site has already collected from a member — GCash, Maya, GoTyme, QRPH, or a
-            card charge — so it shows up in the settlement dashboard with the correct fee split.
+            card charge — so it shows up in the settlement dashboard.
           </p>
 
           <div className={styles.endpoint}>
@@ -306,8 +303,7 @@ export default function DocsPage() {
               <span className={styles.path}>/api/v1/cash-ins</span>
             </div>
             <p className={styles.endpointDesc}>
-              Create a cash-in record. A 1.5% processing fee is deducted from <code>amount</code> automatically
-              (configurable in Settings). Fails with <code>409</code> if the reference was already used.
+              Create a cash-in record. Fails with <code>409</code> if the reference was already used.
             </p>
             <div className={`${styles.endpointBody} ${styles.twoCol}`}>
               <div>
@@ -381,8 +377,6 @@ export default function DocsPage() {
     "reference": "ORDER-1042",
     "channel": "GCash",
     "grossPhp": 500,
-    "feePhp": 7.5,
-    "netCreditPhp": 492.5,
     "status": "pending",
     "createdAt": "2026-08-17T14:02:11.000Z"
   }
@@ -540,8 +534,6 @@ export default function DocsPage() {
     "destination": "09171234567",
     "bank": "GCash",
     "grossPhp": 500,
-    "feePhp": 25,
-    "netPhp": 475,
     "status": "processing",
     "vlpayOrderNo": "DIS26010617538674688"
   }

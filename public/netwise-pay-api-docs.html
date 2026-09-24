@@ -292,7 +292,7 @@
       <p class="lede">
         Take payments with a hosted checkout, record payments you collected yourself, and submit
         withdrawals — all backed by the same settlement dashboard your team already uses. You send us
-        one request; we handle the gateway call, the fee math, and the record-keeping.
+        one request; we handle the gateway call and the record-keeping.
       </p>
 
       <div class="quickfacts">
@@ -345,7 +345,7 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
           <span class="method method-post">POST</span>
           <span class="path">/api/v1/checkout</span>
         </div>
-        <p class="endpoint-desc">Create a checkout. A 1.5% processing fee is deducted from <code>amount</code> automatically — the customer pays the full <code>amount</code>, and <code>netCreditPhp</code> is what you are credited. Fails with <code>409</code> if the reference was already used.</p>
+        <p class="endpoint-desc">Create a checkout for the customer to pay. Fails with <code>409</code> if the reference was already used.</p>
         <div class="endpoint-body two-col">
           <div>
             <div class="code-label">Body</div>
@@ -380,8 +380,6 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
     <span class="k">"reference"</span>: <span class="s">"ORDER-1042"</span>,
     <span class="k">"channel"</span>: <span class="s">"GCash"</span>,
     <span class="k">"grossPhp"</span>: 500,
-    <span class="k">"feePhp"</span>: 7.5,
-    <span class="k">"netCreditPhp"</span>: 492.5,
     <span class="k">"status"</span>: <span class="s">"pending"</span>,
     <span class="k">"checkoutUrl"</span>: <span class="s">"https://checkout.vpayd.shop/payment?orderNo=DIR26010617538674688"</span>,
     <span class="k">"createdAt"</span>: <span class="s">"2026-08-17T14:02:11.000Z"</span>
@@ -425,7 +423,7 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
       <h2>Cash-ins</h2>
       <p class="section-desc">
         Records a payment your site has already collected from a member — GCash, Maya, GoTyme, QRPH,
-        or a card charge — so it shows up in the settlement dashboard with the correct fee split.
+        or a card charge — so it shows up in the settlement dashboard.
       </p>
 
       <div class="endpoint">
@@ -433,7 +431,7 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
           <span class="method method-post">POST</span>
           <span class="path">/api/v1/cash-ins</span>
         </div>
-        <p class="endpoint-desc">Create a cash-in record. A 1.5% processing fee is deducted from <code>amount</code> automatically (configurable in Settings). Fails with <code>409</code> if the reference was already used.</p>
+        <p class="endpoint-desc">Create a cash-in record. Fails with <code>409</code> if the reference was already used.</p>
         <div class="endpoint-body two-col">
           <div>
             <div class="code-label">Body</div>
@@ -466,8 +464,6 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
     <span class="k">"reference"</span>: <span class="s">"ORDER-1042"</span>,
     <span class="k">"channel"</span>: <span class="s">"GCash"</span>,
     <span class="k">"grossPhp"</span>: 500,
-    <span class="k">"feePhp"</span>: 7.5,
-    <span class="k">"netCreditPhp"</span>: 492.5,
     <span class="k">"status"</span>: <span class="s">"pending"</span>,
     <span class="k">"createdAt"</span>: <span class="s">"2026-08-17T14:02:11.000Z"</span>
   }
@@ -561,8 +557,6 @@ Authorization: Bearer <span class="s">nw_live_•••••••••••�
     <span class="k">"destination"</span>: <span class="s">"09171234567"</span>,
     <span class="k">"bank"</span>: <span class="s">"GCash"</span>,
     <span class="k">"grossPhp"</span>: 500,
-    <span class="k">"feePhp"</span>: 25,
-    <span class="k">"netPhp"</span>: 475,
     <span class="k">"status"</span>: <span class="s">"processing"</span>,
     <span class="k">"vlpayOrderNo"</span>: <span class="s">"DIS26010617538674688"</span>
   }

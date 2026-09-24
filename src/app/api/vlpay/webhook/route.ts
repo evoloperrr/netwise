@@ -21,11 +21,35 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   const data = body?.data as
-    | { disburse_no?: string; mch_order_no?: string; bank_reference?: string; state?: number; remark?: string }
+    | {
+        disburse_no?: string;
+        direct_no?: string;
+        mch_order_no?: string;
+        bank_reference?: string;
+        state?: number;
+        remark?: string;
+      }
     | undefined;
 
   if (!body?.success || !data?.mch_order_no) {
     return NextResponse.json({ ok: false, error: "Malformed payload." }, { status: 400 });
+  }
+
+  // Pay-in (checkout) callbacks carry direct_no; payout callbacks carry disburse_no.
+  if (data.direct_no) {
+    const payinStatus =
+      data.state === 2 ? "approved" : data.state === 3 ? "rejected" : data.state === 4 ? "expired" : undefined;
+
+    const cashIn = await prisma.cashIn.findUnique({ where: { reference: data.mch_order_no } });
+    // Only a still-pending checkout can change, so a replayed or late callback can't undo a final status.
+    if (cashIn && cashIn.status === "pending" && payinStatus) {
+      await prisma.cashIn.update({
+        where: { reference: data.mch_order_no },
+        data: { status: payinStatus, vlpayOrderNo: data.direct_no },
+      });
+    }
+
+    return NextResponse.json({ ok: true });
   }
 
   // 2 => SUCCESS, 3 => FAILED, 4 => EXPIRED (see VLPAY docs, Webhook section).

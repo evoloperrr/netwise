@@ -5,6 +5,7 @@ const classFor: Record<string, string> = {
   processing: styles.badgeWarning,
   pending: styles.badgeWarning,
   rejected: styles.badgeDanger,
+  expired: styles.badgeDanger,
 };
 
 export function StatusBadge({ status }: { status: string }) {

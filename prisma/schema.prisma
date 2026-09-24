@@ -18,7 +18,9 @@ model CashIn {
   grossPhp     Float
   feePhp       Float
   netCreditPhp Float
-  status       String   @default("pending") // "pending" | "approved" | "rejected"
+  status       String   @default("pending") // "pending" | "approved" | "rejected" | "expired"
+  vlpayOrderNo String? // VLPAY's direct_no, set for checkout-created cash-ins
+  checkoutUrl  String? // hosted payment page, set for checkout-created cash-ins
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

@@ -98,6 +98,63 @@ async function getCachedVlpayToken(): Promise<string> {
   return pendingToken;
 }
 
+export type VlpayPayinParams = {
+  amountCentavos: number;
+  type: "QR";
+  channel: "GCASH" | "MAYA" | "GOTYME" | "QRPH";
+  callbackUrl: string;
+  referenceId: string;
+  description: string;
+  customer?: { name?: string; lastName?: string; email?: string };
+};
+
+export type VlpayPayinResult =
+  | { ok: true; orderNo: string; paymentUrl: string; raw: unknown }
+  | { ok: false; errorMessage: string; raw: unknown };
+
+// The only place VLPAY's pay-in payload shape is built -- see
+// VLPAY API Documentation_v1.pdf, section 3 (Payin).
+export async function createVlpayPayin(params: VlpayPayinParams): Promise<VlpayPayinResult> {
+  const baseUrl = process.env.VLPAY_BASE_URL;
+  if (!baseUrl) throw new Error("Missing VLPAY_BASE_URL.");
+
+  const token = await getCachedVlpayToken();
+
+  const payload = {
+    amount: params.amountCentavos,
+    currency: "PHP",
+    country: "PH",
+    type: params.type,
+    channel: params.channel,
+    callbackUrl: params.callbackUrl,
+    customerInfo: {
+      ...(params.customer?.name ? { name: params.customer.name } : {}),
+      ...(params.customer?.lastName ? { last_name: params.customer.lastName } : {}),
+      ...(params.customer?.email ? { email: params.customer.email } : {}),
+    },
+    metadata: {
+      description: params.description,
+      referenceId: params.referenceId,
+    },
+  };
+
+  const response = await postJson(`${baseUrl}/v1/transactions/payin`, payload, { Authorization: token });
+  const data = response.body as { success?: boolean; data?: Record<string, unknown>; message?: string } | undefined;
+
+  if (response.statusCode < 200 || response.statusCode >= 300 || !data?.success || !data.data?.paymentUrl) {
+    const message = (data?.data?.message as string | undefined) || data?.message || `HTTP ${response.statusCode}`;
+    return { ok: false, errorMessage: String(message), raw: data ?? { error: message } };
+  }
+
+  return {
+    ok: true,
+    orderNo: String(data.data.orderNo ?? ""),
+    // VLPAY's example response has a stray trailing newline inside paymentUrl.
+    paymentUrl: String(data.data.paymentUrl).trim(),
+    raw: data,
+  };
+}
+
 export type VlpayPayoutParams = {
   amountCentavos: number;
   accountNumber: string;

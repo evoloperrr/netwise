@@ -3,6 +3,7 @@ import { randomBytes } from "crypto";
 import { CHANNELS } from "./channels";
 import { getGatewayConfig } from "./config";
 import { prisma } from "./prisma";
+import { createVlpayPayin, type VlpayPayinParams } from "./vlpay";
 
 export type CreateCashInInput = {
   reference?: unknown;
@@ -13,6 +14,13 @@ export type CreateCashInInput = {
 export type CreateCashInResult =
   | { ok: true; cashIn: Awaited<ReturnType<typeof prisma.cashIn.create>> }
   | { ok: false; error: string; status: number };
+
+async function computeCashInFee(grossPhp: number) {
+  const config = await getGatewayConfig();
+  const feePercent = config.cashInVlpayFeePercent + config.cashInMarkupPercent;
+  const feePhp = Math.round(grossPhp * (feePercent / 100) * 100) / 100;
+  return { feePhp, netCreditPhp: Math.max(grossPhp - feePhp, 0) };
+}
 
 // Shared by the session-protected dashboard form (POST /api/cash-ins) and the
 // API-key-protected public endpoint (POST /api/v1/cash-ins) so a manually
@@ -41,10 +49,7 @@ export async function createCashIn(input: CreateCashInInput): Promise<CreateCash
     return { ok: false, error: "That reference already exists.", status: 409 };
   }
 
-  const config = await getGatewayConfig();
-  const feePercent = config.cashInVlpayFeePercent + config.cashInMarkupPercent;
-  const feePhp = Math.round(grossPhp * (feePercent / 100) * 100) / 100;
-  const netCreditPhp = Math.max(grossPhp - feePhp, 0);
+  const { feePhp, netCreditPhp } = await computeCashInFee(grossPhp);
 
   const cashIn = await prisma.cashIn.create({
     data: {
@@ -54,6 +59,104 @@ export async function createCashIn(input: CreateCashInInput): Promise<CreateCash
       feePhp,
       netCreditPhp,
       status: "pending",
+    },
+  });
+
+  return { ok: true, cashIn };
+}
+
+// Card is deliberately absent: it is not available for checkout yet.
+const CHECKOUT_CHANNELS: Record<string, VlpayPayinParams["channel"]> = {
+  GCash: "GCASH",
+  Maya: "MAYA",
+  GoTyme: "GOTYME",
+  QRPH: "QRPH",
+};
+
+export type CreateCheckoutInput = {
+  reference: unknown;
+  channel: unknown;
+  amount: unknown;
+  description?: unknown;
+  customer?: unknown;
+};
+
+// Creates a pending cash-in and the hosted payment page the customer pays on.
+// The record flips to approved/rejected/expired when VLPAY's callback hits
+// /api/vlpay/webhook -- unlike POST /api/v1/cash-ins, nobody reconciles by hand.
+export async function createCheckout(input: CreateCheckoutInput): Promise<CreateCashInResult> {
+  const { reference, channel, amount, description, customer } = input;
+
+  if (typeof reference !== "string" || reference.trim() === "") {
+    return { ok: false, error: "reference is required.", status: 422 };
+  }
+
+  if (typeof channel !== "string" || !(channel in CHECKOUT_CHANNELS)) {
+    return {
+      ok: false,
+      error: `channel must be one of: ${Object.keys(CHECKOUT_CHANNELS).join(", ")}.`,
+      status: 422,
+    };
+  }
+
+  const grossPhp = Number(amount);
+  if (!Number.isFinite(grossPhp) || grossPhp < 1) {
+    return { ok: false, error: "amount must be at least 1 (PHP).", status: 422 };
+  }
+
+  const trimmedReference = reference.trim();
+  const existing = await prisma.cashIn.findUnique({ where: { reference: trimmedReference } });
+  if (existing) {
+    return { ok: false, error: "That reference already exists.", status: 409 };
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl) {
+    return { ok: false, error: "Checkout is not configured (missing callback URL).", status: 503 };
+  }
+
+  const customerInfo = (customer && typeof customer === "object" ? customer : {}) as Record<string, unknown>;
+  const str = (value: unknown) => (typeof value === "string" && value.trim() !== "" ? value.trim() : undefined);
+
+  let payin;
+  try {
+    payin = await createVlpayPayin({
+      amountCentavos: Math.round(grossPhp * 100),
+      type: "QR",
+      channel: CHECKOUT_CHANNELS[channel],
+      callbackUrl: `${appUrl}/api/vlpay/webhook`,
+      referenceId: trimmedReference,
+      description: str(description) ?? "NetWise Pay checkout",
+      customer: {
+        name: str(customerInfo.name),
+        lastName: str(customerInfo.lastName),
+        email: str(customerInfo.email),
+      },
+    });
+  } catch (cause) {
+    return {
+      ok: false,
+      error: cause instanceof Error ? cause.message : "The payment provider could not be reached.",
+      status: 502,
+    };
+  }
+
+  if (!payin.ok) {
+    return { ok: false, error: payin.errorMessage, status: 502 };
+  }
+
+  const { feePhp, netCreditPhp } = await computeCashInFee(grossPhp);
+
+  const cashIn = await prisma.cashIn.create({
+    data: {
+      reference: trimmedReference,
+      channel,
+      grossPhp,
+      feePhp,
+      netCreditPhp,
+      status: "pending",
+      vlpayOrderNo: payin.orderNo,
+      checkoutUrl: payin.paymentUrl,
     },
   });
 

@@ -33,6 +33,16 @@ export default function DocsPage() {
         </div>
 
         <div className={styles.navGroup}>
+          <div className={styles.navLabel}>Checkout</div>
+          <a className={styles.navLink} href="#create-checkout">
+            <span className={`${styles.m} ${styles.mPost}`}>POST</span> Create
+          </a>
+          <a className={styles.navLink} href="#checkout-status">
+            <span className={`${styles.m} ${styles.mGet}`}>GET</span> Status
+          </a>
+        </div>
+
+        <div className={styles.navGroup}>
           <div className={styles.navLabel}>Cash-ins</div>
           <a className={styles.navLink} href="#create-cash-in">
             <span className={`${styles.m} ${styles.mPost}`}>POST</span> Create
@@ -58,9 +68,9 @@ export default function DocsPage() {
           <span className={styles.eyebrow}>v1 · members-site integration</span>
           <h1>Connect your site to NetWise Pay</h1>
           <p className={styles.lede}>
-            Four endpoints let your members website record payments and submit withdrawals, backed by the same
-            settlement dashboard your team already uses. You send us one request; we handle the gateway call, the
-            fee math, and the record-keeping.
+            Take payments with a hosted checkout, record payments you collected yourself, and submit withdrawals —
+            all backed by the same settlement dashboard your team already uses. You send us one request; we handle
+            the gateway call, the fee math, and the record-keeping.
           </p>
 
           <div className={styles.quickfacts}>
@@ -88,6 +98,198 @@ export default function DocsPage() {
           <div className={styles.note} style={{ marginTop: 14 }}>
             <strong>Keep this server-side.</strong> This key belongs to your backend, not the browser — never call
             these endpoints from client-side JavaScript, and never commit the key to a repo.
+          </div>
+        </section>
+
+        <section className={styles.docBlock} id="create-checkout">
+          <h2>Checkout</h2>
+          <p className={styles.sectionDesc}>
+            Use this when NetWise Pay should collect the payment. You create a checkout for an order, redirect the
+            customer to the returned <code>checkoutUrl</code>, and they pay in their own GCash, Maya or GoTyme app
+            (or scan a QRPH code). We confirm the result automatically — no manual reconciliation.
+          </p>
+
+          <div className={styles.note} style={{ marginBottom: 16 }}>
+            <strong>How it flows</strong>
+            <ol style={{ margin: "8px 0 0", paddingLeft: 20, lineHeight: 1.7 }}>
+              <li>
+                Customer clicks <strong>Checkout / Pay</strong> on your site. Your server calls{" "}
+                <code>POST /api/v1/checkout</code> with a unique <code>reference</code>, the <code>channel</code>{" "}
+                they picked and the <code>amount</code>.
+              </li>
+              <li>
+                Redirect the customer to the <code>checkoutUrl</code> in the response. On mobile it opens the
+                payment app directly (GCash / Maya / GoTyme); for QRPH it shows a QR to scan.
+              </li>
+              <li>
+                The customer pays. Status moves <code>pending</code> → <code>approved</code> (or{" "}
+                <code>rejected</code> / <code>expired</code>) by itself.
+              </li>
+              <li>
+                Poll <a href="#checkout-status">GET /api/v1/cash-ins</a> with your <code>reference</code> until the
+                status is final, then credit the member&apos;s wallet / fulfil the order.
+              </li>
+            </ol>
+          </div>
+
+          <div className={styles.endpoint}>
+            <div className={styles.endpointHead}>
+              <span className={`${styles.method} ${styles.methodPost}`}>POST</span>
+              <span className={styles.path}>/api/v1/checkout</span>
+            </div>
+            <p className={styles.endpointDesc}>
+              Create a checkout. A 1.5% processing fee is deducted from <code>amount</code> automatically — the
+              customer pays the full <code>amount</code>, and <code>netCreditPhp</code> is what you are credited.
+              Fails with <code>409</code> if the reference was already used.
+            </p>
+            <div className={`${styles.endpointBody} ${styles.twoCol}`}>
+              <div>
+                <div className={styles.codeLabel}>Body</div>
+                <table className={styles.fieldTable}>
+                  <tbody>
+                    <tr>
+                      <th>Field</th>
+                      <th>Type</th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>reference</code>
+                      </td>
+                      <td>string</td>
+                      <td>
+                        <span className={styles.req}>required</span>
+                        <br />
+                        Your own unique order ID
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>channel</code>
+                      </td>
+                      <td>string</td>
+                      <td>
+                        <span className={styles.req}>required</span>
+                        <br />
+                        <code>GCash</code> · <code>Maya</code> · <code>GoTyme</code> · <code>QRPH</code>
+                        <br />
+                        Card is not available yet
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>amount</code>
+                      </td>
+                      <td>number</td>
+                      <td>
+                        <span className={styles.req}>required</span>
+                        <br />
+                        Amount the customer pays, in PHP (min 1)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>description</code>
+                      </td>
+                      <td>string</td>
+                      <td>Optional memo, e.g. &quot;Order #1042&quot;</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>customer</code>
+                      </td>
+                      <td>object</td>
+                      <td>
+                        Optional: <code>name</code>, <code>lastName</code>, <code>email</code>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <div className={styles.codeLabel}>Request</div>
+                <pre className={styles.codeBlock}>
+{`curl -X POST \\
+  https://www.netwisepay.com/api/v1/checkout \\
+  -H "Authorization: Bearer nw_live_..." \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "reference": "ORDER-1042",
+    "channel": "GCash",
+    "amount": 500,
+    "description": "Order #1042"
+  }'`}
+                </pre>
+              </div>
+            </div>
+            <div style={{ padding: "0 20px 20px" }}>
+              <div className={styles.codeLabel}>Response · 201 Created</div>
+              <pre className={styles.codeBlock}>
+{`{
+  "ok": true,
+  "checkout": {
+    "reference": "ORDER-1042",
+    "channel": "GCash",
+    "grossPhp": 500,
+    "feePhp": 7.5,
+    "netCreditPhp": 492.5,
+    "status": "pending",
+    "checkoutUrl": "https://checkout.vpayd.shop/payment?orderNo=DIR26010617538674688",
+    "createdAt": "2026-08-17T14:02:11.000Z"
+  }
+}`}
+              </pre>
+            </div>
+            <div style={{ padding: "0 20px 20px" }}>
+              <div className={styles.note}>
+                <strong>
+                  <code>pending</code> is not paid.
+                </strong>{" "}
+                Only fulfil the order once the status is <code>approved</code>. A checkout the customer never
+                completes ends as <code>expired</code>. Create a new checkout with a new <code>reference</code> to
+                let them retry.
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.endpoint} id="checkout-status">
+            <div className={styles.endpointHead}>
+              <span className={`${styles.method} ${styles.methodGet}`}>GET</span>
+              <span className={styles.path}>/api/v1/cash-ins?reference=ORDER-1042</span>
+            </div>
+            <p className={styles.endpointDesc}>
+              Check a checkout&apos;s status by your <code>reference</code>. The response also includes the{" "}
+              <code>checkoutUrl</code>, so you can send an unpaid customer back to it.
+            </p>
+            <div className={`${styles.endpointBody} ${styles.twoCol}`}>
+              <div>
+                <div className={styles.codeLabel}>Query</div>
+                <table className={styles.fieldTable}>
+                  <tbody>
+                    <tr>
+                      <th>Param</th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>reference</code>
+                      </td>
+                      <td>
+                        <span className={styles.req}>required</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <div className={styles.codeLabel}>Request</div>
+                <pre className={styles.codeBlock}>
+{`curl \\
+  "https://www.netwisepay.com/api/v1/cash-ins?reference=ORDER-1042" \\
+  -H "Authorization: Bearer nw_live_..."`}
+                </pre>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -191,7 +393,8 @@ export default function DocsPage() {
               <div className={styles.note}>
                 This endpoint <strong>records</strong> the payment — it does not itself open a GCash/Maya prompt
                 or generate a QR code. Collect payment on your own site first, then call this to log it. A team
-                member marks it <code>approved</code> once reconciled.
+                member marks it <code>approved</code> once reconciled. To have NetWise Pay collect the payment
+                instead, use <a href="#create-checkout">Checkout</a>.
               </div>
             </div>
           </div>
@@ -403,7 +606,12 @@ export default function DocsPage() {
               <span className={`${styles.pill} ${styles.pillWarning}`}>pending</span>
               <span className={`${styles.pill} ${styles.pillSuccess}`}>approved</span>
               <span className={`${styles.pill} ${styles.pillDanger}`}>rejected</span>
-              <p>Set by a team member after reconciling against what actually landed. Not automated.</p>
+              <span className={`${styles.pill} ${styles.pillDanger}`}>expired</span>
+              <p>
+                Checkouts update automatically once the customer pays, fails or lets it lapse (
+                <code>expired</code>). Cash-ins you record yourself are set by a team member after reconciling
+                against what actually landed.
+              </p>
             </div>
             <div className={styles.statusCard}>
               <h3>CashOut.status</h3>
@@ -447,7 +655,16 @@ export default function DocsPage() {
                   <code>409</code>
                 </td>
                 <td>
-                  <em>Cash-ins only:</em> that reference was already used.
+                  <em>Cash-ins and checkout:</em> that reference was already used.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>502</code>
+                </td>
+                <td>
+                  <em>Checkout only:</em> the payment provider rejected or couldn&apos;t process the request — nothing
+                  was created, safe to retry.
                 </td>
               </tr>
               <tr>
